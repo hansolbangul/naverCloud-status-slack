@@ -85,7 +85,7 @@ const coupleSatus = async () => {
     if (res.return !== 3) {
       return {
         status: false,
-        message: `couplemng가 ${psStatus.length}개 만큼 돌고 있습니다.`,
+        message: [`couplemng가 ${psStatus.length}개 만큼 돌고 있습니다.`],
         subtitle: 'couple'
       }
     } else {
