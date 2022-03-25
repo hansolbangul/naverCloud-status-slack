@@ -148,6 +148,12 @@ const mysql = async () => {
         message: [`재실행 하니까 정상적으로 동작이 됩니다! 얏호!`],
         subtitle: 'mysql'
       }
+    } else {
+      return {
+        status: true,
+        message: '정상작동',
+        subtitle: 'couple'
+      }
     }
   } catch (error) {
     console.log(error);
