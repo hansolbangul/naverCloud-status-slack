@@ -21,7 +21,7 @@ const status = async () => {
       subtitle: stStatus.status === false ? (cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항') : cpStatus.status === true ? false : '1가지 에러사항',
       message: stStatus.status === false ? (cpStatus.status === false ? stStatus.map(e => ({message: e.message, subtitle: e.subtitle})).concat(cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : stStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : cpStatus.status === true ? false : cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))
     }
-
+    console.log(message)
     if (message.subtitle !== false) {
       send(message)
     }
@@ -39,8 +39,8 @@ const storageStatus = async () => {
     const { stdout } = await bach_shell(cmd);
     const storage = stdout.split('\n').map(e => e.split(' ').filter(_e => _e !== ''))
     const index = storage.shift()
-    console.log(index)
-    console.log(storage)
+    // console.log(index)
+    // console.log(storage)
     const res = {return: []}
     for (var i = 0; i < storage.length; i++){
       if (storage[i].length !== 0) {
@@ -73,8 +73,8 @@ const coupleSatus = async () => {
     var cmd = `ps -aux | grep couplemng | grep start`;
     const { stdout } = await bach_shell(cmd);
     const psStatus = stdout.split('\n')
-    console.log(psStatus)
-    const res = { 'return': psStatus.length }
+    // console.log(psStatus)
+    const res = { return: psStatus.length }
     if (res.return !== 3) {
       return {
         status: false,
@@ -106,7 +106,8 @@ const uname = async () => {
   }
 }
 
-const send = async(message) => {
+const send = async (message) => {
+  console.log('send')
   slack.webhook({
     text: `${message.host}는 아파요! 🌈${message.status}`,
     attachments: message.message.map(e => ({
