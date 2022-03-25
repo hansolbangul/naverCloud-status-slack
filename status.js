@@ -22,6 +22,9 @@ const status = async () => {
     console.log(stStatus)
     console.log(cpStatus)
 
+    console.log(stStatus.status === false ? cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항')
+    console.log(stStatus.status === false ? cpStatus.status === false ? stStatus.map(e => ({message: e.message, subtitle: e.subtitle})).concat(cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : stStatus.map(e => ({message: e.message, subtitle: e.subtitle})) : cpStatus.status === true ? false : cpStatus.map(e => ({message: e.message, subtitle: e.subtitle})))
+
     const message = {
       host: host,
       subtitle: stStatus.status === false ? cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
