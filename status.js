@@ -11,13 +11,15 @@ const slack = new Slack();
 slack.setWebhook(webhookUri);
 
 const status = async () => {
-  console.log('status')
+  // console.log('status')
   try {
     const host = await uname()
     const stStatus = await storageStatus()
     const cpStatus = await coupleSatus()
 
-    console.log(host, stStatus, cpStatus)
+    console.log(host)
+    console.log(stStatus)
+    console.log(cpStatus)
 
     const message = {
       host: host,
@@ -78,7 +80,7 @@ const coupleSatus = async () => {
     var cmd = `ps -aux | grep couplemng | grep start`;
     const { stdout } = await bach_shell(cmd);
     const psStatus = stdout.split('\n')
-    // console.log(psStatus)
+    console.log(psStatus)
     const res = { return: psStatus.length }
     if (res.return !== 3) {
       return {
@@ -104,7 +106,7 @@ const uname = async () => {
   try {
     var cmd = `uname -a`;
     const { stdout } = await bach_shell(cmd);
-    const name = stdout.split('').filter(e => e !== '')
+    const name = stdout.split(' ').filter(e => e !== '')
     return name[1]
   } catch (error) {
     console.log(error);
@@ -168,7 +170,8 @@ const send = async (message) => {
 
 // send('테스트 합니당.')
 schedule.scheduleJob('*/1 * * * *', function () {
-// schedule.scheduleJob('* * * * * *', function () {
+// schedule.scheduleJob('* * * * * *', function () {\
+  console.log('schedule')
   status()
 });
 
