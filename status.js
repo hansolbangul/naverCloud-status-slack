@@ -20,7 +20,7 @@ const status = async () => {
     const message = {
       host: host,
       subtitle: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? '3가지 에러사항' : '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
-      message: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))).concat(sqlStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))
+      message: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))).concat(sqlStatus.message.map(e => ({message: e, subtitle: sqlStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))
     }
 
     console.log(message)
@@ -118,6 +118,7 @@ const mysql = async () => {
       var _cmd = 'service mysql restart | service mysql status | grep Active'
       const { stdout: reresult } = await bach_shell(_cmd);
       const remysqlStatus = reresult.split(' ').filter(e => e !== '')[1]
+      console.log(remysqlStatus)
       return remysqlStatus !== 'active' ? {
         status: false,
         message: [`재실행 했는데도 안되네요...`],
