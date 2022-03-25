@@ -35,7 +35,7 @@ const status = async () => {
 
 const storageStatus = async () => {
   try {
-    var cmd = `df -h | grep /dev/ | grep -v tmpfs | grep -v loop`;
+    var cmd = `df -t ext4 -h`;
     const { stdout } = await bach_shell(cmd);
     const storage = stdout.split('\n').map(e => e.split(' ').filter(_e => _e !== ''))
     const index = storage.shift()
