@@ -18,25 +18,25 @@ const status = async () => {
     const sqlStatus = await mysql()
 
     var subtitle = true
-    var message = []
+    var msg = []
 
     if (stStatus.status === false) {
-      message.concat(stStatus.message.map(e => ({ message: e, subtitle: stStatus.subtitle })))
+      msg.concat(stStatus.message.map(e => ({ message: e, subtitle: stStatus.subtitle })))
       subtitle = false
     }
     if (cpStatus.status === false) {
-      message.concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle})))
+      msg.concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle})))
       subtitle = false
     }
     if (sqlStatus.status === false) {
-      message.concat(sqlStatus.message.map(e => ({message: e, subtitle: sqlStatus.subtitle})))
+      msg.concat(sqlStatus.message.map(e => ({message: e, subtitle: sqlStatus.subtitle})))
       subtitle = false
     }
 
     const message = {
       host: host,
-      subtitle: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? '3가지 에러사항' : '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
-      message: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))).concat(sqlStatus.message.map(e => ({message: e, subtitle: sqlStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))
+      subtitle: subtitle,
+      message: msg
     }
 
     console.log(message)
