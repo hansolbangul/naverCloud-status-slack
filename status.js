@@ -79,15 +79,15 @@ const storageStatus = async () => {
 
 const coupleSatus = async () => {
   try {
-    var cmd = `ps -aux | grep couplemng | grep start`;
+    var cmd = `ps -aux | grep couplemng`;
     const { stdout } = await bach_shell(cmd);
-    const psStatus = stdout.split('\n')
+    const psStatus = stdout.split('\n').filter(e => e.includes('start'))
     console.log(psStatus)
     const res = { return: psStatus.length }
     if (res.return !== 3) {
       return {
         status: false,
-        message: [`couplemng가 ${psStatus.length}개 만큼 돌고 있습니다.`],
+        message: [`couplemng가 ${psStatus.length}개 돌고 있습니다.`],
         subtitle: 'couple'
       }
     } else {
@@ -118,7 +118,7 @@ const uname = async () => {
 const send = async (message) => {
   console.log('send')
   slack.webhook({
-    text: `${message.host}는 아파요! 🌈${message.subtitle}`,
+    text: `${message.host}는 아파요! 🌈 ${message.subtitle}`,
     attachments: message.message.map(e => ({
       color:"#00FFFF",
       fields:[
