@@ -190,7 +190,7 @@ const send = async (message) => {
 
 
 // 테스트용 1초
-schedule.scheduleJob('*/1 * * * *', function () {
+schedule.scheduleJob('* * * * *', function () {
   console.log('schedule')
   status()
 });
