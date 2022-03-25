@@ -11,10 +11,13 @@ const slack = new Slack();
 slack.setWebhook(webhookUri);
 
 const status = async () => {
+  console.log('status')
   try {
     const host = await uname()
     const stStatus = await storageStatus()
     const cpStatus = await coupleSatus()
+
+    console.log(host, stStatus, cpStatus)
 
     const message = {
       host: host,
@@ -34,6 +37,7 @@ const status = async () => {
 // df -t ext4 -h
 
 const storageStatus = async () => {
+  console.log('storageStatus')
   try {
     var cmd = `df -t ext4 -h`;
     const { stdout } = await bach_shell(cmd);
@@ -69,6 +73,7 @@ const storageStatus = async () => {
 }
 
 const coupleSatus = async () => {
+  console.log('coupleSatus')
   try {
     var cmd = `ps -aux | grep couplemng | grep start`;
     const { stdout } = await bach_shell(cmd);
@@ -95,6 +100,7 @@ const coupleSatus = async () => {
 }
 
 const uname = async () => {
+  console.log('uname')
   try {
     var cmd = `uname -a`;
     const { stdout } = await bach_shell(cmd);
