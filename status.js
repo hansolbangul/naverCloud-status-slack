@@ -118,13 +118,12 @@ const uname = async () => {
 const send = async (message) => {
   console.log('send')
   slack.webhook({
-    text: `${message.host}는 아파요! 🌈${message.status}`,
+    text: `${message.host}는 아파요! 🌈${message.subtitle}`,
     attachments: message.message.map(e => ({
-      pretext: `${e.subtitle} 문제!`,
       color:"#00FFFF",
       fields:[
         {
-          title:"[위험]",
+          title:`${e.subtitle} 문제!`,
           value: e.message,
           short:false
         }
