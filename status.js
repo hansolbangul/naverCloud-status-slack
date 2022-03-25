@@ -67,7 +67,7 @@ const storageStatus = async () => {
   }
 }
 
-const coupleSatus = async (name) => {
+const coupleSatus = async (host) => {
   try {
     var cmd = `ps -aux | grep couplemng`;
     const { stdout } = await bach_shell(cmd);
