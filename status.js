@@ -10,8 +10,9 @@ const webhookUri =
 const slack = new Slack();
 slack.setWebhook(webhookUri);
 
+console.log(webhookUri)
+
 const status = async () => {
-  // console.log('status')
   try {
     const host = await uname()
     const stStatus = await storageStatus()
@@ -23,8 +24,8 @@ const status = async () => {
 
     const message = {
       host: host,
-      subtitle: stStatus.status === false ? (cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항') : cpStatus.status === true ? false : '1가지 에러사항',
-      message: stStatus.status === false ? (cpStatus.status === false ? stStatus.map(e => ({message: e.message, subtitle: e.subtitle})).concat(cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : stStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : cpStatus.status === true ? false : cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))
+      subtitle: stStatus.status === false ? cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
+      message: stStatus.status === false ? cpStatus.status === false ? stStatus.map(e => ({message: e.message, subtitle: e.subtitle})).concat(cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : stStatus.map(e => ({message: e.message, subtitle: e.subtitle})) : cpStatus.status === true ? false : cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))
     }
     console.log(message)
     if (message.subtitle !== false) {
@@ -39,7 +40,6 @@ const status = async () => {
 // df -t ext4 -h
 
 const storageStatus = async () => {
-  console.log('storageStatus')
   try {
     var cmd = `df -t ext4 -h`;
     const { stdout } = await bach_shell(cmd);
@@ -75,7 +75,6 @@ const storageStatus = async () => {
 }
 
 const coupleSatus = async () => {
-  console.log('coupleSatus')
   try {
     var cmd = `ps -aux | grep couplemng | grep start`;
     const { stdout } = await bach_shell(cmd);
@@ -102,7 +101,6 @@ const coupleSatus = async () => {
 }
 
 const uname = async () => {
-  console.log('uname')
   try {
     var cmd = `uname -a`;
     const { stdout } = await bach_shell(cmd);
