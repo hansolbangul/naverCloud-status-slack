@@ -20,6 +20,10 @@ const status = async () => {
     var subtitle = true
     var msg = []
 
+    console.log(stStatus)
+    console.log(cpStatus)
+    console.log(sqlStatus)
+
     if (stStatus.status === false) {
       msg.concat(stStatus.message.map(e => ({ message: e, subtitle: stStatus.subtitle })))
       subtitle = false
