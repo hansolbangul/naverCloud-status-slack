@@ -17,6 +17,22 @@ const status = async () => {
     const cpStatus = await coupleSatus(host)
     const sqlStatus = await mysql()
 
+    var subtitle = true
+    var message = []
+
+    if (stStatus.status === false) {
+      message.concat(stStatus.message.map(e => ({ message: e, subtitle: stStatus.subtitle })))
+      subtitle = false
+    }
+    if (cpStatus.status === false) {
+      message.concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle})))
+      subtitle = false
+    }
+    if (sqlStatus.status === false) {
+      message.concat(sqlStatus.message.map(e => ({message: e, subtitle: sqlStatus.subtitle})))
+      subtitle = false
+    }
+
     const message = {
       host: host,
       subtitle: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? '3가지 에러사항' : '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
