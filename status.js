@@ -2,7 +2,6 @@ const util = require('util');
 const bach_shell = util.promisify(require("child_process").exec)
 const Slack = require("slack-node");
 const schedule = require('node-schedule');
-const { split } = require('lodash');
 require('dotenv').config();
 
 
@@ -13,8 +12,20 @@ slack.setWebhook(webhookUri);
 
 const status = async () => {
   try {
+    const host = await uname()
     const stStatus = await storageStatus()
     const cpStatus = await coupleSatus()
+
+    const message = {
+      host: host,
+      subtitle: stStatus.status === false ? (cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항') : cpStatus.status === true ? false : '1가지 에러사항',
+      message: stStatus.status === false ? (cpStatus.status === false ? stStatus.map(e => ({message: e.message, subtitle: e.subtitle})).concat(cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : stStatus.map(e => ({message: e.message, subtitle: e.subtitle}))) : cpStatus.status === true ? false : cpStatus.map(e => ({message: e.message, subtitle: e.subtitle}))
+    }
+
+    if (message.subtitle !== false) {
+      send(message)
+    }
+
   } catch (error) {
     
   }
@@ -30,7 +41,7 @@ const storageStatus = async () => {
     const index = storage.shift()
     console.log(index)
     console.log(storage)
-    const res = {'return': []}
+    const res = {return: []}
     for (var i = 0; i < storage.length; i++){
       if (storage[i].length !== 0) {
         if (Number(storage[i][4].split('%')[0]) > 90) {
@@ -40,13 +51,15 @@ const storageStatus = async () => {
     }
     if (res.return.length > 0) {
       return {
-        'status': false,
-        'message': res.return.map(e => e)
+        status: false,
+        message: res.return.map(e => e),
+        subtitle: 'storage'
       }
     } else {
       return {
-        'status': true,
-        'message': '정상작동'
+        status: true,
+        message: '정상작동',
+        subtitle: 'storage'
       }
     }
   } catch (error) {
@@ -64,13 +77,15 @@ const coupleSatus = async () => {
     const res = { 'return': psStatus.length }
     if (res.return !== 3) {
       return {
-        'status': false,
-        'message': `couplemng가 ${psStatus.length}개 만큼 돌고 있습니다.`
+        status: false,
+        message: `couplemng가 ${psStatus.length}개 만큼 돌고 있습니다.`,
+        subtitle: 'couple'
       }
     } else {
       return {
-        'status': true,
-        'message': '정상작동'
+        status: true,
+        message: '정상작동',
+        subtitle: 'couple'
       }
     }
   } catch (error) {
@@ -84,7 +99,6 @@ const uname = async () => {
     var cmd = `uname -a`;
     const { stdout } = await bach_shell(cmd);
     const name = stdout.split('').filter(e => e !== '')
-    console.log(name)
     return name[1]
   } catch (error) {
     console.log(error);
@@ -94,44 +108,62 @@ const uname = async () => {
 
 const send = async(message) => {
   slack.webhook({
-	  text: message,
-	  attachments:[
-		  {
-        fallback:"구글드라이브: <https://docs.google.com|업무보고>",
-        pretext:"구글드라이브: <https://docs.google.com|업무보고>",
-	      color:"#00FFFF",
-	      fields:[
-	        {
-	          title:"[알림]",
-	          value:"해당링크로 접속하여 작성해 주세요.",
-	          short:false
-	        }
-	      ]
-      },
-      {
-        fallback:"구글드라이브: <https://docs.google.com|업무보고>",
-        pretext:"구글드라이브: <https://docs.google.com|업무보고>",
-	      color:"#00FFFF",
-	      fields:[
-	        {
-	          title:"[알림]",
-	          value:"해당링크로 접속하여 작성해 주세요.",
-	          short:false
-	        }
-	      ]
-	    }
-	  ]
+    text: `${message.host}는 아파요! 🌈${message.status}`,
+    attachments: message.message.map(e => ({
+      pretext: `${e.subtitle} 문제!`,
+      color:"#00FFFF",
+      fields:[
+        {
+          title:"[위험]",
+          value: e.message,
+          short:false
+        }
+      ]
+    }))
 	}, function(err, response){
 	  console.log(response);
 	});
 }
 
-// send('테스트 합니당.')
-// schedule.scheduleJob('*/1 * * * *', function () {
-// schedule.scheduleJob('* * * * * *', function () {
-  // storageStatus()
-// });
+// const send = async(message) => {
+//   slack.webhook({
+//     text: `${message.host}는 아파요! 🌈${message.status}`,
+//     attachments: [
+// 		  {
+//         // fallback:"구글드라이브: <https://docs.google.com|업무보고>",
+//         pretext:"구글드라이브: <https://docs.google.com|업무보고>",
+// 	      color:"#00FFFF",
+// 	      fields:[
+// 	        {
+// 	          title:"[알림]",
+// 	          value:"해당링크로 접속하여 작성해 주세요.",
+// 	          short:false
+// 	        }
+// 	      ]
+//       },
+//       {
+//         // fallback:"구글드라이브: <https://docs.google.com|업무보고>",
+//         pretext:"구글드라이브: <https://docs.google.com|업무보고>",
+// 	      color:"#00FFFF",
+// 	      fields:[
+// 	        {
+// 	          title:"[알림]",
+// 	          value:"해당링크로 접속하여 작성해 주세요.",
+// 	          short:false
+// 	        }
+// 	      ]
+// 	    }
+// 	  ]
+// 	}, function(err, response){
+// 	  console.log(response);
+// 	});
+// }
 
-send('happy')
+// send('테스트 합니당.')
+schedule.scheduleJob('*/1 * * * *', function () {
+// schedule.scheduleJob('* * * * * *', function () {
+  status()
+});
+
 
 // console.log('sdsd')
