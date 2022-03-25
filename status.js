@@ -75,7 +75,7 @@ const coupleSatus = async (host) => {
     console.log(psStatus)
     const res = { return: psStatus.length }
     if (res.return !== 3) {
-      var _cmd = `python3 /home/${host}/cvtgate3/gate/couplemng.py start`
+      var _cmd = `cd /home/${host}/cvtgate3/gate/ && python3 couplemng.py start`
       await bach_shell(_cmd);
       return {
         status: false,
