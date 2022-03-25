@@ -14,7 +14,7 @@ const status = async () => {
   try {
     const host = await uname()
     const stStatus = await storageStatus()
-    const cpStatus = await coupleSatus()
+    const cpStatus = await coupleSatus(host)
     const sqlStatus = await mysql()
 
     const message = {
@@ -67,7 +67,7 @@ const storageStatus = async () => {
   }
 }
 
-const coupleSatus = async () => {
+const coupleSatus = async (name) => {
   try {
     var cmd = `ps -aux | grep couplemng`;
     const { stdout } = await bach_shell(cmd);
@@ -75,7 +75,7 @@ const coupleSatus = async () => {
     console.log(psStatus)
     const res = { return: psStatus.length }
     if (res.return !== 3) {
-      var _cmd = 'python3 /home/fjbox/cvtgate3/gate/couplemng.py start'
+      var _cmd = `python3 /home/${host}/cvtgate3/gate/couplemng.py start`
       await bach_shell(_cmd);
       return {
         status: false,
