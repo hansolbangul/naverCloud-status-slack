@@ -23,12 +23,12 @@ const status = async () => {
     console.log(cpStatus)
 
     console.log(stStatus.status === false ? cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항')
-    console.log(stStatus.status === false ? cpStatus.status === false ? stStatus.message.map(e => ({message: e.message, subtitle: e.subtitle})).concat(cpStatus.message.map(e => ({message: e.message, subtitle: e.subtitle}))) : stStatus.message.map(e => ({message: e.message, subtitle: e.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e.message, subtitle: e.subtitle})))
+    console.log(stStatus.status === false ? cpStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle})))
 
     const message = {
       host: host,
       subtitle: stStatus.status === false ? cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
-      message: stStatus.status === false ? cpStatus.status === false ? stStatus.message.map(e => ({message: e.message, subtitle: e.subtitle})).concat(cpStatus.message.map(e => ({message: e.message, subtitle: e.subtitle}))) : stStatus.message.map(e => ({message: e.message, subtitle: e.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e.message, subtitle: e.subtitle}))
+      message: stStatus.status === false ? cpStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))
     }
     console.log(message)
     if (message.subtitle !== false) {
