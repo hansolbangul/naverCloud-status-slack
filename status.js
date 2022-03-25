@@ -182,7 +182,14 @@ const send = async (message) => {
 //   status()
 // });
 
-// 테스트용 1분
+// // 테스트용 1분
+// schedule.scheduleJob('*/1 * * * *', function () {
+//   console.log('schedule')
+//   status()
+// });
+
+
+// 테스트용 1초
 schedule.scheduleJob('*/1 * * * *', function () {
   console.log('schedule')
   status()
