@@ -10,26 +10,19 @@ const webhookUri =
 const slack = new Slack();
 slack.setWebhook(webhookUri);
 
-console.log(webhookUri)
-
 const status = async () => {
   try {
     const host = await uname()
     const stStatus = await storageStatus()
     const cpStatus = await coupleSatus()
-
-    console.log(host)
-    console.log(stStatus)
-    console.log(cpStatus)
-
-    console.log(stStatus.status === false ? cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항')
-    console.log(stStatus.status === false ? cpStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle})))
+    const sqlStatus = await mysql()
 
     const message = {
       host: host,
-      subtitle: stStatus.status === false ? cpStatus.status === false ? '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
-      message: stStatus.status === false ? cpStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))
+      subtitle: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? '3가지 에러사항' : '2가지 에러사항' : '1가지 에러사항' : cpStatus.status === true ? false : '1가지 에러사항',
+      message: stStatus.status === false ? cpStatus.status === false ? sqlStatus.status === false ? stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))).concat(sqlStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})).concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))) : stStatus.message.map(e => ({message: e, subtitle: stStatus.subtitle})) : cpStatus.status === true ? false : cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle}))
     }
+
     console.log(message)
     if (message.subtitle !== false) {
       send(message)
@@ -40,7 +33,6 @@ const status = async () => {
   }
 }
 
-// df -t ext4 -h
 
 const storageStatus = async () => {
   try {
@@ -48,8 +40,6 @@ const storageStatus = async () => {
     const { stdout } = await bach_shell(cmd);
     const storage = stdout.split('\n').map(e => e.split(' ').filter(_e => _e !== ''))
     const index = storage.shift()
-    // console.log(index)
-    // console.log(storage)
     const res = {return: []}
     for (var i = 0; i < storage.length; i++){
       if (storage[i].length !== 0) {
@@ -85,6 +75,8 @@ const coupleSatus = async () => {
     console.log(psStatus)
     const res = { return: psStatus.length }
     if (res.return !== 3) {
+      var _cmd = 'python3 /home/fjbox/cvtgate3/gate/couplemng.py start'
+      await bach_shell(_cmd);
       return {
         status: false,
         message: [`couplemng가 ${psStatus.length}개 돌고 있습니다.`],
@@ -115,10 +107,34 @@ const uname = async () => {
   }
 }
 
+const mysql = async () => {
+  try {
+    var cmd = `service mysql status | grep Active `;
+    const { stdout: result } = await bach_shell(cmd);
+    const mysqlStatus = result.split(' ').filter(e => e !== '')[1]
+    if (mysqlStatus !== 'active') {
+      var _cmd = 'service mysql restart | service mysql status | grep Active'
+      const { stdout: reresult } = await bach_shell(_cmd);
+      const remysqlStatus = reresult.split(' ').filter(e => e !== '')[1]
+      return remysqlStatus !== 'active' ? {
+        status: false,
+        message: [`재실행 했는데도 안되네요...`],
+        subtitle: 'mysql'
+      } : {
+        status: false,
+        message: [`재실행 하니까 정상적으로 동작이 됩니다! 얏호!`],
+        subtitle: 'mysql'
+      }
+    }
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+}
+
 const send = async (message) => {
-  console.log('send')
   slack.webhook({
-    text: `${message.host}는 아파요! 🌈 ${message.subtitle}`,
+    text: `🚨 ${message.host}는 아파요! -> 🌈 ${message.subtitle}`,
     attachments: message.message.map(e => ({
       color:"#00FFFF",
       fields:[
@@ -134,46 +150,14 @@ const send = async (message) => {
 	});
 }
 
-// const send = async(message) => {
-//   slack.webhook({
-//     text: `${message.host}는 아파요! 🌈${message.status}`,
-//     attachments: [
-// 		  {
-//         // fallback:"구글드라이브: <https://docs.google.com|업무보고>",
-//         pretext:"구글드라이브: <https://docs.google.com|업무보고>",
-// 	      color:"#00FFFF",
-// 	      fields:[
-// 	        {
-// 	          title:"[알림]",
-// 	          value:"해당링크로 접속하여 작성해 주세요.",
-// 	          short:false
-// 	        }
-// 	      ]
-//       },
-//       {
-//         // fallback:"구글드라이브: <https://docs.google.com|업무보고>",
-//         pretext:"구글드라이브: <https://docs.google.com|업무보고>",
-// 	      color:"#00FFFF",
-// 	      fields:[
-// 	        {
-// 	          title:"[알림]",
-// 	          value:"해당링크로 접속하여 작성해 주세요.",
-// 	          short:false
-// 	        }
-// 	      ]
-// 	    }
-// 	  ]
-// 	}, function(err, response){
-// 	  console.log(response);
-// 	});
-// }
+// // 1시간 주기
+// schedule.scheduleJob('0 */1 * * *', function () {
+//   console.log('schedule')
+//   status()
+// });
 
-// send('테스트 합니당.')
+// 테스트용 1분
 schedule.scheduleJob('*/1 * * * *', function () {
-// schedule.scheduleJob('* * * * * *', function () {\
   console.log('schedule')
   status()
 });
-
-
-// console.log('sdsd')
