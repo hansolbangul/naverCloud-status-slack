@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "dotenv": "^16.0.0",
+    "forever": "^4.0.3",
+    "node-schedule": "^2.1.0",
+    "slack-node": "^0.1.8",
+    "util": "^0.12.4"
+  }
+}
