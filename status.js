@@ -25,17 +25,30 @@ const status = async () => {
     console.log(sqlStatus)
 
     if (stStatus.status === false) {
-      msg.concat(stStatus.message.map(e => ({ message: e, subtitle: stStatus.subtitle })))
+      if (msg.length === 0) {
+        stStatus.message.map(e => msg.push({ message: e, subtitle: stStatus.subtitle }))
+      } else {
+        msg.concat(stStatus.message.map(e => ({ message: e, subtitle: stStatus.subtitle })))
+      }
       subtitle = false
     }
     if (cpStatus.status === false) {
-      msg.concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle})))
+      if (msg.length === 0) {
+        cpStatus.message.map(e => msg.push({message: e, subtitle: cpStatus.subtitle}))
+      } else {
+        msg.concat(cpStatus.message.map(e => ({message: e, subtitle: cpStatus.subtitle})))
+      }
       subtitle = false
     }
     if (sqlStatus.status === false) {
-      msg.concat(sqlStatus.message.map(e => ({message: e, subtitle: sqlStatus.subtitle})))
+      if (msg.length === 0) {
+        sqlStatus.message.map(e => msg.push({ message: e, subtitle: sqlStatus.subtitle }))
+      } else {
+        msg.concat(sqlStatus.message.map(e => ({ message: e, subtitle: sqlStatus.subtitle })))
+      }
       subtitle = false
     }
+    
 
     console.log(msg)
 
@@ -49,7 +62,6 @@ const status = async () => {
     if (message.subtitle !== false) {
       send(message)
     }
-
   } catch (error) {
     
   }
