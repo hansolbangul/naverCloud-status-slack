@@ -75,8 +75,10 @@ const coupleSatus = async (host) => {
     console.log(psStatus)
     const res = { return: psStatus.length }
     if (res.return !== 3) {
-      var _cmd = `cd /home/${host}/cvtgate3/gate/ && python3 couplemng.py start`
-      await bach_shell(_cmd);
+      if (res.return === 0) {
+        var _cmd = `cd /home/${host}/cvtgate3/gate/ && python3 couplemng.py start`
+        await bach_shell(_cmd);
+      }
       return {
         status: false,
         message: [`couplemng가 ${psStatus.length}개 돌고 있습니다.`],
