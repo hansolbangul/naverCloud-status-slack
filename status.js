@@ -37,6 +37,8 @@ const status = async () => {
       subtitle = false
     }
 
+    console.log(msg)
+
     const message = {
       host: host,
       subtitle: subtitle,
