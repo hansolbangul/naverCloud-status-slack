@@ -137,12 +137,13 @@ const mysql = async () => {
   try {
     var cmd = `service mysql status | grep Active `;
     const { stdout: result } = await bach_shell(cmd);
+    console.log(result)
     const mysqlStatus = result.split(' ').filter(e => e !== '')[1]
     if (mysqlStatus !== 'active') {
       var _cmd = 'service mysql restart | service mysql status | grep Active'
       const { stdout: reresult } = await bach_shell(_cmd);
       const remysqlStatus = reresult.split(' ').filter(e => e !== '')[1]
-      console.log(remysqlStatus)
+      console.log(reresult)
       return remysqlStatus !== 'active' ? {
         status: false,
         message: [`재실행 했는데도 안되네요...`],
