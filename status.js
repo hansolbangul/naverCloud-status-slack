@@ -18,21 +18,22 @@ const status = async () => {
     const cpStatus = await coupleSatus(host)
     const sqlStatus = await mysql()
 
-    var subtitle = true
+    var subtitle = 0
     var msg = []
 
     if (stStatus.status === false) {
       stStatus.message.map(e => msg.push({ message: e, subtitle: stStatus.subtitle }))
-      subtitle = false
+      subtitle += 1
     }
     if (cpStatus.status === false) {
       cpStatus.message.map(e => msg.push({message: e, subtitle: cpStatus.subtitle}))
-      subtitle = false
+      subtitle += 1
     }
     if (sqlStatus.status === false) {
       sqlStatus.message.map(e => msg.push({ message: e, subtitle: sqlStatus.subtitle }))
-      subtitle = false
+      subtitle += 1
     }
+
     
     console.log(msg)
 
@@ -43,7 +44,7 @@ const status = async () => {
     }
 
     console.log(message)
-    if (message.subtitle !== false) {
+    if (message.subtitle !== 0) {
       send(message)
     }
   } catch (error) {
