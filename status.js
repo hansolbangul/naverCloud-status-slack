@@ -140,7 +140,9 @@ const mysql = async () => {
     console.log(result)
     const mysqlStatus = result.split(' ').filter(e => e !== '')[1]
     if (mysqlStatus !== 'active') {
-      var _cmd = 'service mysql restart | service mysql status | grep Active'
+      var _cmd = 'service mysql restart'
+      await bach_shell(_cmd);
+      _cmd = 'service mysql status | grep Active'
       const { stdout: reresult } = await bach_shell(_cmd);
       const remysqlStatus = reresult.split(' ').filter(e => e !== '')[1]
       console.log(reresult)
