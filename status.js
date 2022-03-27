@@ -88,9 +88,11 @@ const storageStatus = async () => {
 }
 
 const coupleSatus = async (host) => {
+  console.log('coupleStatus')
   try {
     var cmd = `ps -aux | grep couplemng`;
     const { stdout } = await bach_shell(cmd);
+    console.log(stdout)
     const psStatus = stdout.split('\n').filter(e => e.includes('start'))
     console.log(psStatus)
     const res = { return: psStatus.length }
@@ -165,7 +167,7 @@ const mysql = async () => {
 
 const send = async (message) => {
   slack.webhook({
-    text: `🚨 ${message.host}는 아파요! -> 🌈 ${message.subtitle}`,
+    text: `🚨 ${message.host}는 아파요! -> 🌈 ${message.subtitle}개의 문제`,
     attachments: message.message.map(e => ({
       color:"#00FFFF",
       fields:[
