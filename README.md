@@ -1,4 +1,4 @@
-# Packer templates for Ubuntu written in legacy JSON
+# naverCloud-status-slack
 
 ### Overview
 
