@@ -11,7 +11,6 @@ const slack = new Slack();
 slack.setWebhook(webhookUri);
 
 const status = async () => {
-  console.log('status')
   try {
     const host = await uname()
     const stStatus = await storageStatus()
@@ -34,9 +33,6 @@ const status = async () => {
       subtitle += 1
     }
 
-    
-    console.log(msg)
-
     const message = {
       host: host,
       subtitle: subtitle,
@@ -54,7 +50,6 @@ const status = async () => {
 
 
 const storageStatus = async () => {
-  console.log('storageStatus')
   try {
     var cmd = `df -t ext4 -h`;
     const { stdout } = await bach_shell(cmd);
@@ -63,7 +58,7 @@ const storageStatus = async () => {
     const res = {return: []}
     for (var i = 0; i < storage.length; i++){
       if (storage[i].length !== 0) {
-        if (Number(storage[i][4].split('%')[0]) > 90) {
+        if (Number(storage[i][4].split('%')[0]) >= 90) {
           res.return.push(`'${index[5]}'된 '${storage[i][5]}'가 '${storage[i][4]}'만큼 찼습니다. ${index[1]}: ${storage[i][1]}`)
         }
       }
@@ -88,7 +83,6 @@ const storageStatus = async () => {
 }
 
 const coupleSatus = async (host) => {
-  console.log('coupleStatus')
   try {
     var cmd = `ps -aux | grep couplemng`;
     const { stdout } = await bach_shell(cmd);
@@ -100,11 +94,17 @@ const coupleSatus = async (host) => {
       if (res.return === 0) {
         var _cmd = `cd /home/${host}/cvtgate3/gate/ && python3 couplemng.py start`
         await bach_shell(_cmd);
-      }
-      return {
-        status: false,
-        message: [`couplemng가 ${psStatus.length}개 돌고 있습니다.`],
-        subtitle: 'couple'
+        return {
+          status: false,
+          message: [`couplemng가 돌지 않아 재실행을 명령했습니다.`],
+          subtitle: 'couple'
+        }
+      } else {
+        return {
+          status: false,
+          message: [`couplemng가 ${psStatus.length}개 돌고 있습니다.`],
+          subtitle: 'couple'
+        }
       }
     } else {
       return {
@@ -120,7 +120,6 @@ const coupleSatus = async (host) => {
 }
 
 const uname = async () => {
-  console.log('uname')
   try {
     var cmd = `uname -a`;
     const { stdout } = await bach_shell(cmd);
@@ -133,7 +132,6 @@ const uname = async () => {
 }
 
 const mysql = async () => {
-  console.log('mysql')
   try {
     var cmd = `service mysql status | grep Active `;
     const { stdout: result } = await bach_shell(cmd);
@@ -141,7 +139,7 @@ const mysql = async () => {
     const mysqlStatus = result.split(' ').filter(e => e !== '')[1]
     if (mysqlStatus !== 'active') {
       var _cmd = 'service mysql restart'
-      await bach_shell(_cmd);
+      await bach_shell(_cmd)
       _cmd = 'service mysql status | grep Active'
       const { stdout: reresult } = await bach_shell(_cmd);
       const remysqlStatus = reresult.split(' ').filter(e => e !== '')[1]
@@ -187,10 +185,10 @@ const send = async (message) => {
 }
 
 // // 1시간 주기
-// schedule.scheduleJob('0 */1 * * *', function () {
-//   console.log('schedule')
-//   status()
-// });
+schedule.scheduleJob('0 */1 * * *', function () {
+  console.log('schedule')
+  status()
+});
 
 // // 테스트용 1분
 // schedule.scheduleJob('*/1 * * * *', function () {
@@ -200,7 +198,7 @@ const send = async (message) => {
 
 
 // 테스트용 1초
-schedule.scheduleJob('* * * * *', function () {
-  console.log('schedule')
-  status()
-});
+// schedule.scheduleJob('* * * * *', function () {
+//   console.log('schedule')
+//   status()
+// });
